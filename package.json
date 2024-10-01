@@ -1,0 +1,22 @@
+{
+  "name": "tt-buy-one-thing",
+  "version": "1.0.0",
+  "description": "It's a test task. Need to use Nest + Vue.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "lerna run dev --stream --parallel",
+    "test": "lerna run test --",
+    "build": "lerna run build",
+    "build:all": "tsc"
+  },
+  "author": "DjoSmer",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "lerna": "^8.1.8",
+    "prettier": "^3.3.3"
+  }
+}
