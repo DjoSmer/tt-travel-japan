@@ -9,7 +9,7 @@ import payadmitConfig from './config/payadmit.config';
   imports: [
     ConfigModule.forRoot({
       load: [payadmitConfig],
-    }),
+    })
   ],
   providers: [PayadmitService],
 })

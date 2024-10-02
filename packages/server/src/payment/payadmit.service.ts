@@ -60,7 +60,7 @@ export class PayadmitService {
         body: data && JSON.stringify(data),
       });
 
-      const result = res.json();
+      const result = await res.json();
       this.logger.debug('Payment fetch - success', JSON.stringify(result));
 
       return result;

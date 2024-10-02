@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Logger } from '@nestjs/common';
 import { PayadmitService } from './payadmit.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { ApiPayment, ApiResponse } from './types/payment.type';
@@ -6,6 +6,8 @@ import { getPayments, setPayment } from 'src/store';
 
 @Controller('payment')
 export class PaymentController {
+  private readonly logger = new Logger(PaymentController.name);
+
   constructor(private readonly paymentService: PayadmitService) {}
   @Get()
   getAll() {
@@ -39,5 +41,17 @@ export class PaymentController {
     }
 
     return response;
+  }
+
+  @Post('webhook')
+  webhook(@Body() params: any) {
+    /**
+     * обработка ответа от payadmit
+     */
+    this.logger.log('webhook', JSON.stringify(params));
+
+    setPayment(params);
+
+    return { success: true };
   }
 }
