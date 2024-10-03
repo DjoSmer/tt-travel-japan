@@ -1,22 +1,23 @@
 import { Controller, Post, Body, Get, Logger } from '@nestjs/common';
+import { PaymentService } from './payment.service';
 import { PayadmitService } from './payadmit.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { ApiPayment, ApiResponse } from './types/payment.type';
-import { getPayments, setPayment } from 'src/store';
+import { PaymentResponse } from './types/payadmit.type';
 
 @Controller('payment')
 export class PaymentController {
   private readonly logger = new Logger(PaymentController.name);
 
-  constructor(private readonly paymentService: PayadmitService) {}
+  constructor(private readonly payadmitService: PayadmitService, private readonly paymentService: PaymentService) {}
   @Get()
   getAll() {
-    return getPayments()
+    return this.paymentService.gets();
   }
   
   @Post()
   async create(@Body() { firstName, lastName, email, phone, ...billingAddress }: CreatePaymentDto) {
-    const {result} = await this.paymentService.create({
+    const {result} = await this.payadmitService.create({
       amount: 799.5,
       currency: 'EUR',
       description: 'Japan ticket',
@@ -29,7 +30,7 @@ export class PaymentController {
       billingAddress,
     });
 
-    setPayment(result);
+    this.paymentService.set(result);
 
     const {id, redirectUrl} = result;
 
@@ -44,13 +45,13 @@ export class PaymentController {
   }
 
   @Post('webhook')
-  webhook(@Body() params: any) {
+  webhook(@Body() params: PaymentResponse) {
     /**
      * обработка ответа от payadmit
      */
-    this.logger.log('webhook', JSON.stringify(params));
+    this.logger.debug('webhook', JSON.stringify(params));
 
-    setPayment(params);
+    this.paymentService.set(params);
 
     return { success: true };
   }

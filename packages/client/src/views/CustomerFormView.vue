@@ -7,26 +7,31 @@ import type { ApiPayment, ApiResponse } from '@/types/payment';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const formRef = ref<HTMLFormElement>();
-const state = ref({
+
+type StateType = {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+    addressLine1?: string;
+    addressLine2?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+}
+
+const state = ref<StateType>({
     firstName: '',
     lastName: '',
     phone: '',
     email: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    country: '',
 });
-
-type StateType = typeof state.value;
 
 const stateError = ref<Partial<StateType>>({});
 
 const submit = async () => {
     if (!formRef.value?.reportValidity()) return false;
-    const formData = new FormData(formRef.value);
 
     stateError.value = {};
     try {
@@ -36,7 +41,7 @@ const submit = async () => {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(state.value)
         });
         const json = await res.json() as ApiResponse<ApiPayment, StateType>;
 

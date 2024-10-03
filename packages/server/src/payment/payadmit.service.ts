@@ -49,6 +49,7 @@ export class PayadmitService {
   }: FetchParams<RequestType> = {}): Promise<ReturnData> {
     try {
       const { url, apiKey } = this.payadmitConfig;
+      const body = data && JSON.stringify(data);
 
       const res = await fetch(url, {
         headers: {
@@ -57,11 +58,11 @@ export class PayadmitService {
           Authorization: `Bearer ${apiKey}`,
         },
         method,
-        body: data && JSON.stringify(data),
+        body,
       });
 
       const result = await res.json();
-      this.logger.debug('Payment fetch - success', JSON.stringify(result));
+      this.logger.debug('Payment fetch - success', body, JSON.stringify(result));
 
       return result;
     } catch (e) {
